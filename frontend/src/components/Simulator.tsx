@@ -4,8 +4,10 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AlertTriangle, Terminal, ArrowRight, Mic, MicOff, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import TextSimulator from "@/components/TextSimulator";
 import { FallingPattern } from "@/components/ui/falling-pattern";
+import { useTranslation } from "@/lib/i18n";
 
 interface TacticProfile {
   encounters: number;
@@ -38,6 +40,8 @@ export default function Simulator() {
   const [loading, setLoading] = useState(false);
   const [interruption, setInterruption] = useState<{tactic: string, text: string} | null>(null);
   const [isFinished, setIsFinished] = useState(false);
+  const { t, locale } = useTranslation();
+  
   
   // Voice state
   const [isListening, setIsListening] = useState(false);
@@ -129,7 +133,8 @@ export default function Simulator() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           session_id: currentSessionId,
-          spoken_text
+          spoken_text,
+          locale
         })
       });
       
@@ -137,7 +142,7 @@ export default function Simulator() {
       if (nextNode.is_terminal) {
         setIsFinished(true);
         setCurrentNode(null);
-        speak("Simulation terminated. Please check your dashboard.");
+        speak(t("simulator.session_logged"));
       } else {
         setCurrentNode(nextNode);
         speak(nextNode.text);
@@ -156,16 +161,32 @@ export default function Simulator() {
       const utterance = new SpeechSynthesisUtterance(text);
       
       const voices = window.speechSynthesis.getVoices();
-      const preferredVoice = voices.find(v => 
-        v.name.includes("Online (Natural)") || 
-        v.name.includes("Google US English") || 
-        v.name.includes("Google UK English Male")
-      );
-      if (preferredVoice) {
-        utterance.voice = preferredVoice;
+      
+      let preferredVoice;
+      if (locale === "ta") {
+        preferredVoice = voices.find(v => v.lang.includes("ta") || v.name.includes("Tamil"));
+      } else if (locale === "hi") {
+        preferredVoice = voices.find(v => v.lang.includes("hi") || v.name.includes("Hindi"));
+      } else if (locale === "ml") {
+        preferredVoice = voices.find(v => v.lang.includes("ml") || v.name.includes("Malayalam"));
+      } else if (locale === "te") {
+        preferredVoice = voices.find(v => v.lang.includes("te") || v.name.includes("Telugu"));
       }
       
-      utterance.rate = 1.25;
+      if (!preferredVoice) {
+        preferredVoice = voices.find(v => 
+          v.name.includes("Online (Natural)") || 
+          v.name.includes("Google US English") || 
+          v.name.includes("Google UK English Male")
+        );
+      }
+      
+      if (preferredVoice) {
+        utterance.voice = preferredVoice;
+        utterance.lang = preferredVoice.lang;
+      }
+      
+      utterance.rate = locale === "en" ? 1.25 : 1.0;
       utterance.pitch = 1.0;
       window.speechSynthesis.speak(utterance);
     }
@@ -208,7 +229,8 @@ export default function Simulator() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           session_id: newSessionId,
-          scenario_id: "scenario_1"
+          scenario_id: "scenario_1",
+          locale
         })
       });
       if (!res.ok) throw new Error("Failed to start simulation");
@@ -237,7 +259,8 @@ export default function Simulator() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           session_id: session.sessionId,
-          spoken_text
+          spoken_text,
+          locale
         })
       });
       
@@ -250,7 +273,7 @@ export default function Simulator() {
       if (nextNode.is_terminal) {
         setIsFinished(true);
         setCurrentNode(null);
-        speak("Simulation terminated. Please check your dashboard.");
+        speak(t("simulator.session_logged"));
       } else {
         setCurrentNode(nextNode);
         speak(nextNode.text);
@@ -274,12 +297,14 @@ export default function Simulator() {
     }
 
     return (
-      <div className="w-full flex-1 flex flex-col items-center justify-center py-24 z-10">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="max-w-xl text-center space-y-12"
-        >
+      <div className="w-full flex-1 flex flex-col z-10 font-mono">
+        {/* HERO SECTION */}
+        <section className="min-h-[80vh] flex flex-col items-center justify-center">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="max-w-xl text-center space-y-12"
+          >
             <div className="space-y-6">
               <h1 
                 className="text-7xl md:text-[9rem] font-black tracking-tighter leading-none"
@@ -295,7 +320,7 @@ export default function Simulator() {
                 THEMIS
               </h1>
               <p className="text-neutral-400 font-bold drop-shadow-md uppercase text-sm md:text-base tracking-[0.3em]">
-                Interactive Fraud Inoculation Simulator
+                {t("home.subtitle")}
               </p>
             </div>
             
@@ -307,7 +332,7 @@ export default function Simulator() {
               >
                 <span className="flex items-center gap-2 font-mono text-sm">
                   <Terminal size={18} />
-                  {loading ? "INITIALIZING..." : "VOICE SIMULATOR"}
+                  {loading ? t("home.initializing") : t("home.voice_simulator")}
                 </span>
               </button>
               
@@ -318,11 +343,77 @@ export default function Simulator() {
               >
                 <span className="flex items-center gap-2 font-mono text-sm">
                   <MessageSquare size={18} />
-                  TEXT SCENARIOS
+                  {t("home.text_scenarios")}
                 </span>
               </button>
             </div>
           </motion.div>
+        </section>
+
+        {/* SCROLL REVEAL SECTIONS */}
+        <section className="min-h-[70vh] flex flex-col justify-center border-t border-neutral-800 py-24">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="max-w-3xl space-y-8"
+          >
+            <h2 className="text-5xl md:text-7xl font-bold tracking-tighter">{t("home.features.learn.title")}</h2>
+            <p className="text-xl md:text-2xl text-neutral-400 leading-relaxed">{t("home.features.learn.desc")}</p>
+            <Link href="/learn" className="inline-flex items-center gap-2 text-white border-b border-white pb-1 hover:gap-4 transition-all">
+              {t("home.features.learn.btn")} <ArrowRight size={18} />
+            </Link>
+          </motion.div>
+        </section>
+
+        <section className="min-h-[70vh] flex flex-col justify-center items-end text-right border-t border-neutral-800 py-24">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="max-w-3xl space-y-8"
+          >
+            <h2 className="text-5xl md:text-7xl font-bold tracking-tighter">{t("home.features.quiz.title")}</h2>
+            <p className="text-xl md:text-2xl text-neutral-400 leading-relaxed">{t("home.features.quiz.desc")}</p>
+            <Link href="/quiz" className="inline-flex items-center gap-2 text-white border-b border-white pb-1 hover:gap-4 transition-all flex-row-reverse">
+              {t("home.features.quiz.btn")} <ArrowRight size={18} className="rotate-180" /> 
+            </Link>
+          </motion.div>
+        </section>
+
+        <section className="min-h-[70vh] flex flex-col justify-center border-t border-neutral-800 py-24">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="max-w-3xl space-y-8"
+          >
+            <h2 className="text-5xl md:text-7xl font-bold tracking-tighter">{t("home.features.dashboard.title")}</h2>
+            <p className="text-xl md:text-2xl text-neutral-400 leading-relaxed">{t("home.features.dashboard.desc")}</p>
+            <Link href="/dashboard" className="inline-flex items-center gap-2 text-white border-b border-white pb-1 hover:gap-4 transition-all">
+              {t("home.features.dashboard.btn")} <ArrowRight size={18} />
+            </Link>
+          </motion.div>
+        </section>
+
+        <section className="min-h-[70vh] flex flex-col justify-center items-end text-right border-t border-neutral-800 py-24">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="max-w-3xl space-y-8"
+          >
+            <h2 className="text-5xl md:text-7xl font-bold tracking-tighter">{t("home.features.reports.title")}</h2>
+            <p className="text-xl md:text-2xl text-neutral-400 leading-relaxed">{t("home.features.reports.desc")}</p>
+            <Link href="/reports" className="inline-flex items-center gap-2 text-white border-b border-white pb-1 hover:gap-4 transition-all flex-row-reverse">
+              {t("home.features.reports.btn")} <ArrowRight size={18} className="rotate-180" />
+            </Link>
+          </motion.div>
+        </section>
       </div>
     );
   }
@@ -338,7 +429,7 @@ export default function Simulator() {
         >
           <div className="flex items-center gap-4 text-red-500 border-b border-red-900/50 pb-4">
             <AlertTriangle size={32} />
-            <h2 className="text-2xl font-bold tracking-widest">CRITICAL EXPOSURE</h2>
+            <h2 className="text-2xl font-bold tracking-widest">{t("simulator.critical_exposure")}</h2>
           </div>
           <p className="text-lg text-red-200 leading-relaxed">
             {interruption.text}
@@ -347,7 +438,7 @@ export default function Simulator() {
             onClick={clearInterruption}
             className="w-full h-12 brutalist-border border-red-500/50 hover:bg-red-500 hover:text-black transition-colors flex items-center justify-between px-6"
           >
-            <span>ACKNOWLEDGE & CONTINUE</span>
+            <span>{t("simulator.acknowledge")}</span>
             <ArrowRight size={18} />
           </button>
         </motion.div>
@@ -364,15 +455,15 @@ export default function Simulator() {
           animate={{ opacity: 1 }}
           className="max-w-xl text-center space-y-8"
         >
-          <h2 className="text-3xl font-bold">SCENARIO TERMINATED</h2>
+          <h2 className="text-3xl font-bold">{t("simulator.terminated")}</h2>
           <p className="text-neutral-400">
-            Session data has been logged. Your behavioral profile is available in the dashboard.
+            {t("simulator.session_logged")}
           </p>
           <button 
             onClick={() => window.location.reload()}
             className="h-12 px-8 brutalist-border brutalist-button"
           >
-            RESTART SIMULATION
+            {t("simulator.restart")}
           </button>
         </motion.div>
       </div>
@@ -395,9 +486,9 @@ export default function Simulator() {
             <div className="flex items-center justify-between border-b border-neutral-800 pb-4 text-sm text-neutral-500">
               <span className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                ACTIVE CONNECTION: {currentNode.actor.toUpperCase()}
+                {t("simulator.active_connection")}: {currentNode.actor.toUpperCase()}
               </span>
-              <span>NODE: {currentNode.id} (Tactics: {currentNode.tactic_tags.join(", ")})</span>
+              <span>{t("simulator.node")}: {currentNode.id} ({t("simulator.tactics")}: {currentNode.tactic_tags.map(tag => t(`tactics.${tag}`)).join(", ")})</span>
             </div>
 
             {/* Narrative / Text */}
@@ -420,9 +511,9 @@ export default function Simulator() {
               </button>
               
               <div className="h-12 text-center text-neutral-400 max-w-lg mx-auto">
-                {isListening && !transcript && "Listening..."}
+                {isListening && !transcript && t("simulator.listening")}
                 {transcript && <span className="text-white italic">"{transcript}"</span>}
-                {loading && <span className="animate-pulse">Processing response...</span>}
+                {loading && <span className="animate-pulse">{t("simulator.processing")}</span>}
               </div>
             </div>
           </motion.div>

@@ -15,6 +15,7 @@ class Choice(BaseModel):
 class VoiceChoiceRequest(BaseModel):
     session_id: str
     spoken_text: str
+    locale: str = "en"
 
 class DecisionNode(BaseModel):
     id: str
@@ -63,6 +64,7 @@ class BehavioralProfile(BaseModel):
 class StartSimulationRequest(BaseModel):
     session_id: str
     scenario_id: str
+    locale: str = "en"
 
 class ChoiceRequest(BaseModel):
     session_id: str

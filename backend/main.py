@@ -7,7 +7,7 @@ from typing import Optional, List
 import random
 
 from models import StartSimulationRequest, ChoiceRequest, ReportRequest, DecisionNode, VoiceChoiceRequest, VoiceDecisionNode, LLMEvaluationResult, BehavioralProfile, TacticProfile, TextChoiceRequest
-from mock_data import mock_nodes, scenarios
+from mock_data import mock_nodes, mock_nodes_ta, mock_nodes_hi, mock_nodes_ml, mock_nodes_te, scenarios
 from database import create_db_and_tables, get_session, ScamReport, engine
 
 app = FastAPI(title="THEMIS Backend")
@@ -47,7 +47,17 @@ def start_simulation(req: StartSimulationRequest, db: Session = Depends(get_sess
                 selected_scenario = scenario
                 break
     
-    start_node = mock_nodes.get(selected_scenario.start_node_id)
+    if req.locale == "ta":
+        nodes = mock_nodes_ta
+    elif req.locale == "hi":
+        nodes = mock_nodes_hi
+    elif req.locale == "ml":
+        nodes = mock_nodes_ml
+    elif req.locale == "te":
+        nodes = mock_nodes_te
+    else:
+        nodes = mock_nodes
+    start_node = nodes.get(selected_scenario.start_node_id)
     if not start_node:
         raise HTTPException(status_code=500, detail="Start node not found")
         
@@ -55,7 +65,8 @@ def start_simulation(req: StartSimulationRequest, db: Session = Depends(get_sess
         "scenario_id": selected_scenario.id,
         "current_node_id": start_node.id,
         "history": [],
-        "profile": BehavioralProfile(session_id=req.session_id, tactics={}).model_dump_json()
+        "profile": BehavioralProfile(session_id=req.session_id, tactics={}).model_dump_json(),
+        "locale": req.locale
     }
     redis_client.set(get_session_key(req.session_id), json.dumps(session_data))
     return start_node
@@ -128,6 +139,15 @@ def submit_voice_choice(req: VoiceChoiceRequest):
     What should you say next to escalate the scam?
     What tactic are you using now?
     """
+
+    if req.locale == "ta":
+        prompt += "\nIMPORTANT: Your generated text (next_text) MUST be in the Tamil language (தமிழ்)."
+    elif req.locale == "hi":
+        prompt += "\nIMPORTANT: Your generated text (next_text) MUST be in the Hindi language (हिन्दी)."
+    elif req.locale == "ml":
+        prompt += "\nIMPORTANT: Your generated text (next_text) MUST be in the Malayalam language (മലയാളം)."
+    elif req.locale == "te":
+        prompt += "\nIMPORTANT: Your generated text (next_text) MUST be in the Telugu language (తెలుగు)."
 
     if gemini_client and os.getenv("GEMINI_API_KEY"):
         try:
