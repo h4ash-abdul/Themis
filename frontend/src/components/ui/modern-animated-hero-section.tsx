@@ -151,14 +151,14 @@ const RainingLetters: React.FC = () => {
   useEffect(() => {
     const updateActiveIndices = () => {
       const newActiveIndices = new Set<number>()
-      const numActive = Math.floor(Math.random() * 3) + 2
+      const numActive = Math.floor(Math.random() * 4) + 2
       for (let i = 0; i < numActive; i++) {
         newActiveIndices.add(Math.floor(Math.random() * characters.length))
       }
       setActiveIndices(newActiveIndices)
     }
 
-    const flickerInterval = setInterval(updateActiveIndices, 100)
+    const flickerInterval = setInterval(updateActiveIndices, 600)
     return () => clearInterval(flickerInterval)
   }, [characters.length])
 
@@ -192,20 +192,20 @@ const RainingLetters: React.FC = () => {
       {characters.map((char, index) => (
         <span
           key={index}
-          className={`absolute text-xs transition-colors duration-100 ${
+          className={`absolute text-xs transition-colors duration-[400ms] ${
             activeIndices.has(index)
-              ? "text-[#00ff00] text-base scale-125 z-10 font-bold animate-pulse"
+              ? "text-[#00ff00] text-base z-10 font-bold"
               : "text-slate-600 font-light"
           }`}
           style={{
             left: `${char.x}%`,
             top: `${char.y}%`,
-            transform: `translate(-50%, -50%) ${activeIndices.has(index) ? 'scale(1.25)' : 'scale(1)'}`,
+            transform: `translate(-50%, -50%) ${activeIndices.has(index) ? 'scale(1.15)' : 'scale(1)'}`,
             textShadow: activeIndices.has(index) 
-              ? '0 0 8px rgba(255,255,255,0.8), 0 0 12px rgba(255,255,255,0.4)' 
+              ? '0 0 10px rgba(0,255,0,0.8), 0 0 15px rgba(255,255,255,0.6)' 
               : 'none',
-            opacity: activeIndices.has(index) ? 1 : 0.4,
-            transition: 'color 0.1s, transform 0.1s, text-shadow 0.1s',
+            opacity: activeIndices.has(index) ? 1 : 0.3,
+            transition: 'color 0.4s ease, transform 0.4s ease, text-shadow 0.4s ease, opacity 0.4s ease',
             willChange: 'transform, top',
             fontSize: '1.8rem',
             fontFamily: 'monospace'
