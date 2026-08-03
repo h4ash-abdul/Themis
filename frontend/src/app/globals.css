@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #000000;
+  --color-foreground: #ffffff;
+  --color-accent: #ff3333;
+  --color-muted: #333333;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+    --accent: 0 100% 60%;
+    --muted: 0 0% 20%;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+.brutalist-border {
+  border: 1px solid var(--color-muted);
+}
+.brutalist-button {
+  transition: all 0.2s ease;
+}
+.brutalist-button:hover {
+  background-color: var(--color-foreground);
+  color: var(--color-background);
+}
