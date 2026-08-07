@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-navy-900 text-white font-body antialiased selection:bg-accent-orange selection:text-white;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+  }
+}
+
+.hero-gradient {
+  background: radial-gradient(circle at 50% -20%, #113954 0%, #021626 60%);
+}
+
+.card-gradient {
+  background: linear-gradient(145deg, rgba(17, 57, 84, 0.4) 0%, rgba(2, 22, 38, 0.1) 100%);
+}

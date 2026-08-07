@@ -128,7 +128,8 @@ export default function Simulator() {
     
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:8000/api/simulation/voice_choice", {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const res = await fetch(`${API_URL}/api/simulation/voice_choice`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -224,7 +225,8 @@ export default function Simulator() {
     setLoading(true);
     try {
       const newSessionId = crypto.randomUUID();
-      const res = await fetch("http://localhost:8000/api/simulation/start", {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const res = await fetch(`${API_URL}/api/simulation/start`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -254,7 +256,8 @@ export default function Simulator() {
     
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:8000/api/simulation/voice_choice", {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const res = await fetch(`${API_URL}/api/simulation/voice_choice`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

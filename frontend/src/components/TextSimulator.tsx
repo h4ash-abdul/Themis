@@ -32,7 +32,8 @@ export default function TextSimulator({ onBack }: { onBack: () => void }) {
 
     const sessionId = localStorage.getItem("themis_session_id") || "anonymous";
     try {
-      await fetch("http://localhost:8000/api/simulation/text_choice", {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      await fetch(`${API_URL}/api/simulation/text_choice`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

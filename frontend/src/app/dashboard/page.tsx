@@ -24,7 +24,8 @@ export default function Dashboard() {
     const sid = localStorage.getItem("themis_session_id");
     
     if (sid) {
-      fetch(`http://localhost:8000/api/simulation/profile/${sid}`)
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      fetch(`${API_URL}/api/simulation/profile/${sid}`)
         .then(res => {
           if (!res.ok) {
             throw new Error("Profile not found");
