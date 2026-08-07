@@ -1,7 +1,9 @@
 from sqlmodel import Field, SQLModel, create_engine, Session
 
+from typing import Optional
+
 class ScamReport(SQLModel, table=True):
-    id: int | None = Field(default=None, primary_key=True)
+    id: Optional[int] = Field(default=None, primary_key=True)
     session_id: str
     tactic: str
     location: str
