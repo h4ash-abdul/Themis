@@ -30,7 +30,12 @@ export default function TextSimulator({ onBack }: { onBack: () => void }) {
     if (selectedOption) return;
     setSelectedOption(opt.id);
 
-    const sessionId = localStorage.getItem("themis_session_id") || "anonymous";
+    let sessionId = localStorage.getItem("themis_session_id");
+    if (!sessionId || sessionId === "anonymous") {
+      sessionId = crypto.randomUUID();
+      localStorage.setItem("themis_session_id", sessionId);
+    }
+
     try {
       const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
       await fetch(`${API_URL}/api/simulation/text_choice`, {
