@@ -93,17 +93,11 @@ export default function Simulator() {
               transcriptRef.current = "";
               setTranscript("");
               
-              // We must use sessionRef because handleVoiceSubmit in this closure has stale session state!
               if (sessionRef.current) {
-                // Call handleVoiceSubmit manually instead of relying on the stale closure version if we want,
-                // BUT the stale handleVoiceSubmit also captures `session`!
-                // So we must rewrite handleVoiceSubmit or just do the fetch here.
-                // Actually, handleVoiceSubmit is NOT recreated, it uses the stale state.
-                // Let's call a safe submit function!
                 safeVoiceSubmit(finalSubmission, sessionRef.current.sessionId);
               }
             }
-          }, 1500);
+          }, 3000); // Increased from 1500ms to 3000ms to allow users to pause while thinking
         };
         
         recognition.onend = () => {
@@ -210,6 +204,16 @@ export default function Simulator() {
       setTranscript("");
       isListeningRef.current = true;
       setIsListening(true);
+      
+      const langMap: Record<string, string> = {
+        en: "en-US",
+        hi: "hi-IN",
+        ta: "ta-IN",
+        ml: "ml-IN",
+        te: "te-IN"
+      };
+      recognitionRef.current.lang = langMap[locale] || "en-US";
+      
       try {
         recognitionRef.current.start();
       } catch (e) {
@@ -328,16 +332,19 @@ export default function Simulator() {
             </div>
             
             <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
-              <button 
-                onClick={startSimulation}
-                disabled={loading}
-                className="group relative inline-flex h-14 items-center justify-center overflow-hidden brutalist-border bg-white px-8 font-medium text-black brutalist-button hover:bg-neutral-200 transition-colors"
-              >
-                <span className="flex items-center gap-2 font-mono text-sm">
-                  <Terminal size={18} />
-                  {loading ? t("home.initializing") : t("home.voice_simulator")}
-                </span>
-              </button>
+              <div className="flex flex-col items-center gap-2">
+                <button 
+                  onClick={startSimulation}
+                  disabled={loading}
+                  className="group relative inline-flex h-14 items-center justify-center overflow-hidden brutalist-border bg-white px-8 font-medium text-black brutalist-button hover:bg-neutral-200 transition-colors"
+                >
+                  <span className="flex items-center gap-2 font-mono text-sm">
+                    <Terminal size={18} />
+                    {loading ? t("home.initializing") : t("home.voice_simulator")}
+                  </span>
+                </button>
+                {loading && <span className="text-xs text-neutral-500 font-mono animate-pulse">Waking up secure server (can take up to 60s)...</span>}
+              </div>
               
               <button 
                 onClick={() => setSimulatorMode("text")}
