@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import Link from "next/link";
 import BackgroundWrapper from "@/components/BackgroundWrapper";
@@ -9,6 +9,13 @@ import { LanguageProvider } from "@/lib/i18n";
 export const metadata: Metadata = {
   title: "THEMIS",
   description: "Interactive Fraud Inoculation Simulator",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({
