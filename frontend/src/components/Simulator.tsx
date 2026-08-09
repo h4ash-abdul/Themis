@@ -306,11 +306,11 @@ export default function Simulator() {
     return (
       <div className="w-full flex-1 flex flex-col z-10 font-mono">
         {/* HERO SECTION */}
-        <section className="min-h-[80vh] flex flex-col items-center justify-center">
+        <section className="min-h-[80vh] flex flex-col items-center justify-center px-4 md:px-0">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="max-w-xl text-center space-y-12"
+            className="max-w-xl w-full text-center space-y-12"
           >
             <div className="space-y-6">
               <h1 
@@ -331,12 +331,12 @@ export default function Simulator() {
               </p>
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
-              <div className="flex flex-col items-center gap-2">
+            <div className="flex flex-col sm:flex-row gap-4 items-center justify-center w-full px-4 sm:px-0">
+              <div className="flex flex-col items-center gap-2 w-full sm:w-auto">
                 <button 
                   onClick={startSimulation}
                   disabled={loading}
-                  className="group relative inline-flex h-14 items-center justify-center overflow-hidden brutalist-border bg-white px-8 font-medium text-black brutalist-button hover:bg-neutral-200 transition-colors"
+                  className="group relative inline-flex h-14 w-full sm:w-auto items-center justify-center overflow-hidden brutalist-border bg-white px-4 md:px-8 font-medium text-black brutalist-button hover:bg-neutral-200 transition-colors"
                 >
                   <span className="flex items-center gap-2 font-mono text-sm">
                     <Terminal size={18} />
@@ -349,7 +349,7 @@ export default function Simulator() {
               <button 
                 onClick={() => setSimulatorMode("text")}
                 disabled={loading}
-                className="group relative inline-flex h-14 items-center justify-center overflow-hidden brutalist-border bg-black text-white px-8 font-medium hover:bg-neutral-900 transition-colors"
+                className="group relative inline-flex h-14 w-full sm:w-auto items-center justify-center overflow-hidden brutalist-border bg-black text-white px-4 md:px-8 font-medium hover:bg-neutral-900 transition-colors"
               >
                 <span className="flex items-center gap-2 font-mono text-sm">
                   <MessageSquare size={18} />
@@ -361,7 +361,7 @@ export default function Simulator() {
         </section>
 
         {/* SCROLL REVEAL SECTIONS */}
-        <section className="min-h-[70vh] flex flex-col justify-center border-t border-neutral-800 py-24">
+        <section className="min-h-[70vh] flex flex-col justify-center border-t border-neutral-800 py-24 px-4 md:px-0">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}

@@ -73,21 +73,21 @@ export default function TextSimulator({ onBack }: { onBack: () => void }) {
   if (selectedScenario) {
     if (scenarioComplete) {
       return (
-        <div className="w-full max-w-4xl mx-auto py-24 z-10 flex flex-col min-h-[70vh] items-center justify-center text-center space-y-8 font-mono">
-          <h2 className="text-3xl font-bold">{t("text_simulator.analysis_complete")}</h2>
+        <div className="w-full max-w-4xl mx-auto py-12 md:py-24 px-4 md:px-0 z-10 flex flex-col min-h-[70vh] items-center justify-center text-center space-y-8 font-mono">
+          <h2 className="text-2xl md:text-3xl font-bold">{t("text_simulator.analysis_complete")}</h2>
           <p className="text-neutral-400">
             {t("simulator.session_logged")}
           </p>
-          <div className="flex gap-4 justify-center pt-8">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8 w-full px-4 sm:px-0">
             <button 
               onClick={() => window.location.href = '/dashboard'}
-              className="h-12 px-8 border border-white text-white font-bold uppercase hover:bg-neutral-800 transition-colors"
+              className="h-14 sm:h-12 px-4 md:px-8 w-full sm:w-auto border border-white text-white font-bold uppercase hover:bg-neutral-800 transition-colors text-sm md:text-base"
             >
               {t("text_simulator.view_behavioral_profile")}
             </button>
             <button 
               onClick={resetSimulator}
-              className="h-12 px-8 border border-neutral-700 hover:bg-neutral-900 transition-colors uppercase font-bold"
+              className="h-14 sm:h-12 px-4 md:px-8 w-full sm:w-auto border border-neutral-700 hover:bg-neutral-900 transition-colors uppercase font-bold text-sm md:text-base"
             >
               {t("simulator.restart")}
             </button>
@@ -102,7 +102,7 @@ export default function TextSimulator({ onBack }: { onBack: () => void }) {
     const activeOption = currentStep.options.find(opt => opt.id === selectedOption);
 
     return (
-      <div className="w-full max-w-4xl mx-auto py-12 z-10 flex flex-col min-h-[70vh] font-mono">
+      <div className="w-full max-w-4xl mx-auto py-8 md:py-12 px-4 md:px-0 z-10 flex flex-col min-h-[70vh] font-mono">
         <button 
           onClick={resetSimulator}
           className="text-neutral-500 hover:text-white transition-colors flex items-center gap-2 text-sm uppercase tracking-widest mb-12"
@@ -162,7 +162,7 @@ export default function TextSimulator({ onBack }: { onBack: () => void }) {
                     <button
                       key={opt.id}
                       onClick={() => handleOptionSelect(opt)}
-                      className="w-full text-left p-5 border border-neutral-800 hover:border-white hover:bg-neutral-900 transition-all flex items-center justify-between group"
+                      className="w-full text-left p-5 md:p-6 min-h-[5rem] border border-neutral-800 hover:border-white hover:bg-neutral-900 transition-all flex items-center justify-between group"
                     >
                       <span className="text-lg text-white">
                         {opt.text}
@@ -214,7 +214,7 @@ export default function TextSimulator({ onBack }: { onBack: () => void }) {
     scenarios;
 
   return (
-    <div className="w-full max-w-6xl mx-auto py-12 z-10 flex flex-col min-h-[70vh] font-mono">
+    <div className="w-full max-w-6xl mx-auto py-8 md:py-12 px-4 z-10 flex flex-col min-h-[70vh] font-mono">
       <button 
         onClick={onBack}
         className="self-start flex items-center gap-2 text-neutral-400 hover:text-white transition-colors mb-12 text-sm"

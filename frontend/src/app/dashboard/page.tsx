@@ -97,7 +97,7 @@ export default function Dashboard() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <div className="brutalist-border p-6 h-[400px] flex items-center justify-center bg-neutral-950">
+            <div className="brutalist-border p-4 md:p-6 h-[300px] md:h-[400px] flex items-center justify-center bg-neutral-950">
               <ResponsiveContainer width="100%" height="100%">
                 <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data}>
                   <PolarGrid stroke="#333" />
@@ -185,7 +185,7 @@ export default function Dashboard() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          <div className="brutalist-border p-6 h-[400px] bg-neutral-950 flex flex-col">
+          <div className="brutalist-border p-4 md:p-6 h-[350px] md:h-[400px] bg-neutral-950 flex flex-col">
             <h3 className="text-xl font-bold mb-6 uppercase tracking-widest text-neutral-400 text-sm">{t("dashboard.emerging_trends.increase")}</h3>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={trendsData} margin={{ top: 0, right: 30, left: 20, bottom: 0 }} layout="vertical">

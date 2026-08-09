@@ -21,7 +21,7 @@ export default function RootLayout({
       <body className="min-h-screen bg-black text-white selection:bg-white selection:text-black font-sans antialiased">
         <BackgroundWrapper />
         <LanguageProvider>
-          <div className="flex flex-col min-h-screen p-6 md:p-12 z-10 relative">
+          <div className="flex flex-col min-h-screen p-4 md:p-8 lg:p-12 z-10 relative">
             <Navbar />
             
             <main className="flex-1">
