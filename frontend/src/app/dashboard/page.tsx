@@ -45,7 +45,16 @@ export default function Dashboard() {
     }
   }, []);
 
-  if (loading) return <div className="font-mono text-neutral-500">{t("dashboard.loading")}</div>;
+  if (loading) return (
+    <div className="flex flex-col items-center justify-center min-h-[50vh] font-mono space-y-4">
+      <div className="text-xl text-neutral-300 font-bold tracking-widest uppercase animate-pulse">
+        {t("dashboard.loading")}
+      </div>
+      <div className="text-xs text-neutral-500 uppercase">
+        Establishing secure connection... (may take up to 60s)
+      </div>
+    </div>
+  );
 
   const data = profile ? Object.entries(profile.tactics).map(([tactic, stats]) => ({
     subject: tactic.toUpperCase(),
