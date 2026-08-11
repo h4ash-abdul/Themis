@@ -67,6 +67,7 @@ export default function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.4, ease: [0.04, 0.62, 0.23, 0.98] }}
             className="md:hidden flex flex-col items-center gap-6 pt-8 pb-4 w-full overflow-hidden"
           >
             <nav className="text-lg font-mono text-neutral-300 font-semibold drop-shadow-md uppercase flex flex-col items-center gap-6 w-full">
