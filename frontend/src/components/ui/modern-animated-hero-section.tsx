@@ -129,7 +129,8 @@ const RainingLetters: React.FC = () => {
 
   const createCharacters = useCallback(() => {
     const allChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?"
-    const charCount = 150 // Reduced for background performance
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+    const charCount = isMobile ? 50 : 150; // Reduce density on mobile
     const newCharacters: Character[] = []
 
     for (let i = 0; i < charCount; i++) {
@@ -192,9 +193,9 @@ const RainingLetters: React.FC = () => {
       {characters.map((char, index) => (
         <span
           key={index}
-          className={`absolute text-xs transition-colors duration-[400ms] ${
+          className={`absolute text-lg md:text-[1.8rem] transition-colors duration-[400ms] ${
             activeIndices.has(index)
-              ? "text-[#00ff00] text-base z-10 font-bold"
+              ? "text-[#00ff00] z-10 font-bold"
               : "text-slate-600 font-light"
           }`}
           style={{
@@ -207,7 +208,6 @@ const RainingLetters: React.FC = () => {
             opacity: activeIndices.has(index) ? 1 : 0.3,
             transition: 'color 0.4s ease, transform 0.4s ease, text-shadow 0.4s ease, opacity 0.4s ease',
             willChange: 'transform, top',
-            fontSize: '1.8rem',
             fontFamily: 'monospace'
           }}
         >
