@@ -28,6 +28,21 @@ An interactive, multilingual cyber awareness platform designed to inoculate user
 
 ---
 
+## 📐 Architecture & Core Workflows
+
+```mermaid
+graph TD
+    A[Frontend: Next.js] -->|1. Submit Voice/Text| B(Backend: FastAPI)
+    B -->|2. Fetch Session Data| C[(FakeRedis)]
+    C -.->|3. Return Context| B
+    B -->|4. Prompt Scenario| D{AI Model: Gemini / G4F}
+    D -.->|5. Return Scam Evaluation| B
+    B -->|6. Update Behavioral Profile| C
+    B -->|7. Return Next Node| A
+```
+
+---
+
 ## 🚀 Running Locally
 
 ### Prerequisites
